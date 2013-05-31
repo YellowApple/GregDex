@@ -1,0 +1,36 @@
+#!/usr/bin/perl
+
+my $version = "0.1-alpha";
+
+use Wx;
+use if $^O eq 'MSWin32', 'Win32::Scanner::EZTWAIN';
+use if $^O ne 'MSWin32', 'Scanner::Page';
+use if $^O ne 'MSWin32', 'Scanner::Device';
+
+package GregDexUI;
+
+use base qw(Wx::App);
+
+sub OnInit {
+    my $self = shift;
+    my $frame = Wx::Frame->new( undef,			# Parent window
+				-1,			# Window ID
+				"GregDex $version",	# Window title
+				[-1,-1],		# x,y position
+				[200, 150] )		# x,y size
+    $self->SetTopWindow($frame);
+    $frame->Show(1);
+    
+package main;
+
+sub scan_document {
+    if $^O eq 'MSWin32' {
+	# TODO: Implement Win32 scanning
+    } else {
+	# TODO: Implement Unix scanning
+    }
+}
+
+sub main_loop {
+    # TODO: Implement main runtime loop
+}
