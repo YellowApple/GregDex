@@ -1,14 +1,8 @@
 #!/usr/bin/perl
 
-# GregDex Document Indexing System
+# GregDex - a home-user-oriented document indexing tool
 # (C) 2013 Ryan Northrup
 # $blurb_about_same_license_as_perl_itself
-
-=head1 DESCRIPTION
-
-GregDex - a document indexing system for individual users
-
-=cut
 
 my $version = "0.1-alpha";
 

@@ -1,0 +1,74 @@
+package GregDex::Indexer;
+
+use Moose;
+use namespace::autoclean;
+use DBI;
+
+# Attributes
+
+# Database attributes
+has db_type (
+    is => 'rw',
+    default=>'sqlite',
+);
+
+has [   'db_type',
+        'db_file',
+        'db_name',
+        'db_host',
+        'db_port',
+        'db_user',
+        'db_pass',
+] => (
+        is => 'rw',
+);
+
+# Methods
+
+sub create_index{
+
+}
+
+sub open_index {
+    
+}
+
+sub close_index {
+
+}
+
+sub delete_index {
+
+}
+
+sub list_fields {
+
+}
+
+sub create_field {
+
+}
+
+sub delete_field {
+
+}
+
+sub add_document {
+
+}
+
+sub retrieve_document {
+
+}
+
+sub update_document {
+
+}
+
+sub remove_document {
+
+}
+
+__PACKAGE__->meta->make_immutable;
+
+1;

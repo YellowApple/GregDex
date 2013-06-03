@@ -1,0 +1,40 @@
+=pod
+
+=head1 NAME
+
+GregDex - a document indexing and management program for home / individual use
+
+=head1 VERSION
+
+version 0.1-alpha
+
+=head1 DESCRIPTION
+
+GregDex is (well, will be) a program for indexing and managing digital
+documents, particularly for home use, as well as other scenarios where a
+full-featured, enterprise-grade document management system is excessive.
+
+WARNING: GregDex is far from complete, and is not yet suitable for regular use. 
+Please keep that in mind when attempting to use this software.
+
+=head2 Why?
+
+Most free-and-open-source (FOSS) document management software appears to be more
+tailored to enterprise use.  While such tools are certainly effective in an
+enterprise setting, they are excessive for home/individual users who do not need
+such functionality.  GregDex is designed to cater to that niche instead, acting
+as an easy-to-configure alternative to full-fledged document management systems.
+
+GregDex primarily uses SQLite for storing document metadata.  However, support
+for other local databases (and possibly some remote databases) that conform to
+Perl's DBI is planned, though not immediately.
+
+=head1 COPYRIGHT
+
+Copyright (C) 2013 Ryan Northrup.  All rights reserved.
+
+GregDex is free software; you may redistribute and/or modify it under the terms
+of the Perl Artistic License or any version of the GNU General Public License. 
+For more information, please consult the LICENSE file included with GregDex.
+
+=cut
