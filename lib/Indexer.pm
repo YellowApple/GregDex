@@ -20,6 +20,25 @@ NOTE: Incomplete synopsis.
         db_path => '~/.GregDex/var/index.db',
     );
     
+    $indexer->open_index();
+    $indexer->initialize_index();
+    $indexer->create_field("Document_Name", "varchar");
+    
+    my $document_path = "/home/someuser/Projects/GregDex/lib/Indexer.pm";
+    my %document_metadata = (
+        "Document_Name", "Grocery Receipt",
+    );
+    
+    $indexer->add_document($document_path, %document_metadata);
+    
+    $indexer->create_field("Document_Author", "varchar");
+    $indexer->create_field("Document_Date", "date");
+    
+    $document_metadata{"Document_Author"} = "Ryan Northrup";
+    $document_metadata{"Document_Date"] = "2013-06-04";
+    
+    $indexer->update_document($document_path, %document_metadata);
+    
 =head1 DESCRIPTION
 
 GregDex::Indexer is designed to handle a good portion of the backend
@@ -33,6 +52,13 @@ While GregDex::Indexer is not designed to be used outside of GregDex itself,
 it has been designed to be as reusable as possible regardless, so as to be
 useful to Perl hackers who want to interface with GregDex in their own scripts
 and/or modules.
+
+Something to note: GregDex::Indexer does nothing to enforce how it's internally
+structured; all it really does is provide a consistent interface to a DBI-
+compatible relational database.  While it does have some defaults geared toward
+GregDex specifically, it will happily erase its default fields (namely, "id"
+and "document_path").  It doesn't provide a way to create customized tables,
+however, so it's not a full wrapper to DBI, nor should it be.
 
 =head1 ATTRIBUTES
 
@@ -183,6 +209,10 @@ sub delete_field {
 
 sub add_document {
     # TODO: Implement add_document
+    my $self = shift;
+    my $document_path = shift;
+    my %document_metadata = shift;
+    # SQL stuff goes here
 }
 
 sub search_for_document {
@@ -195,14 +225,24 @@ sub retrieve_document {
 
 sub update_document {
     # TODO: Implement update_document
+    my $self = shift;
+    my $document_path = shift;
+    my $document_metadata = shift;
+    # SQL stuff goes here
 }
 
 sub remove_document {
     # TODO: Implement remove_document
+    my $self = shift;
+    my $document_path = shift;
+    # SQL stuff goes here
 }
 
 sub delete_document {
     # TODO: Implement delete_document
+    my $self = shift;
+    my $document_path = shift;
+    
 }
 
 __PACKAGE__->meta->make_immutable;
