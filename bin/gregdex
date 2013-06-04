@@ -17,7 +17,7 @@ use if $^O eq 'MSWin32', 'Win32::Scanner::EZTWAIN';
 use if $^O ne 'MSWin32', 'Scanner::Page';
 use if $^O ne 'MSWin32', 'Scanner::Device';
 
-package GregDexUI;
+package GregDexGUI;
 
 use base qw(Wx::App);
 

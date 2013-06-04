@@ -9,32 +9,55 @@ use DBI;
 # Database attributes
 has db_type (
     is => 'rw',
-    default=>'sqlite',
+    default => 'sqlite',
 );
 
-has [   'db_type',
-        'db_file',
-        'db_name',
+has db_name (
+    is => 'rw',
+    default => 'gregdex',
+);
+
+has db_table (
+    is => 'rw',
+    default => 'gregdex',
+);
+
+has [   'db_file',
         'db_host',
         'db_port',
         'db_user',
         'db_pass',
+        'db_handle',
 ] => (
         is => 'rw',
 );
 
 # Methods
 
-sub create_index{
-
+sub create_index { # TODO: make create_index code less redundant, or merge into open_index
+    my $self = shift;
+    if $self->$db_type = 'mysql' {
+        # TODO: Implement MySQL support
+    } else { # default to SQLite
+        $self->$db_handle = DBI->connect("dbi:SQLite:dbname=$self->$db_file","","");
+        $self->$db_handle->do("CREATE TABLE $self->$db_table (id INTEGER PRIMARY KEY, path TEXT)");
+    }
+    return 1;
 }
 
 sub open_index {
-    
+    my $self = shift;
+    if $self->$db_type = 'mysql' {
+        # TODO: Implement MySQL support
+    } else { # default to SQLite
+        $self->$db_handle = DBI->connect("dbi:SQLite:dbname=$self->$db_file","","");
+    }
+    return 1;
 }
 
 sub close_index {
-
+    my $self = shift;
+    $self->$db_handle->disconnect();
 }
 
 sub delete_index {
@@ -46,14 +69,43 @@ sub list_fields {
 }
 
 sub create_field {
+    my $self = shift;
+    my $field_name = shift;
+    my $field_type = shift;
+    $self->$db_handle->do("ALTER TABLE $self->$db_table ADD $field_name $field_type;");
+    return 1;
+}
 
+sub edit_field_name {
+    my $self = shift;
+    my $old_name = shift;
+    my $new_name = shift;
+    # NOTE: I don't know if this works outside of Oracle SQL; if not, I'll
+    # likely have to figure out a more cross-platform means of doing this.
+    # Curse my lack of SQL experience!
+    $self->$db_handle->do("ALTER TABLE $self->$db_table RENAME COLUMN $old_name to $new_name;");
+}
+
+sub edit_field_type {
+    my $self = shift;
+    my $field_name = shift;
+    my $field_type = shift;
+    $self->$db_handle->do("ALTER TABLE $self->$db_table MODIFY $field_name $field_type;");
+    return 1;
 }
 
 sub delete_field {
-
+    my $self = shift;
+    my $field_name = shift;
+    $self->$db_handle->do("ALTER TABLE $self->$db_table DROP COLUMN $field_name;");
+    return 1;
 }
 
 sub add_document {
+
+}
+
+sub find_document {
 
 }
 
