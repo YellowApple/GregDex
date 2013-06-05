@@ -3,6 +3,7 @@ package GregDex::Indexer;
 use Moose;
 use namespace::autoclean;
 use DBI;
+use TryCatch;
 
 =head1 NAME
 
@@ -16,7 +17,7 @@ NOTE: Incomplete synopsis.
     my $dbh
     $indexer = new GregDex::Indexer(
         db_type => 'sqlite',
-        db_ref => \$indexer,
+        db_ref => \$dbh,
         db_path => '~/.GregDex/var/index.db',
     );
     
@@ -112,12 +113,20 @@ has db_table (
 
 =head1 METHODS
 
-=item new()
+=item new
+
+    my $indexer = GregDex::Indexer->new(
+        db_type => 'sqlite',
+        db_ref => \$dbh,
+        db_path => '~/.GregDex/var/index.db',
+    );
 
 The constructor.  See the ATTRIBUTES section above for information on which
 parameters are available/expected/required/etc.
 
-=item initialize_index()
+=item initialize_index
+
+    $indexer->initialize_index();
 
 Initializes a GregDex index using the parameters specified during object
 construction.  This index is implemented as a new database with one table
@@ -131,11 +140,13 @@ Returns true (1) if successful.
 sub initialize_index {
     my $self = shift;
     my $index_db = $self->db_ref;
-    $$index_db->do("CREATE TABLE $self->db_table (id INTEGER PRIMARY KEY, path TEXT);");
+    $$index_db->do("CREATE TABLE $self->db_table (id INTEGER PRIMARY KEY, path TEXT)");
     return 1;
 }
 
-=item open_index()
+=item open_index
+
+    $indexer->open_index();
 
 Opens an existing GregDex index, or creates a new one if one doesn't already
 exist, using the parameters specified during object construction.  Returns true
@@ -154,7 +165,9 @@ sub open_index {
     return 1;
 }
 
-=item close_index()
+=item close_index
+
+    $indexer->close_index();
 
 Closes a currently-open GregDex index.  Returns true (1) if successful.
 
@@ -167,7 +180,9 @@ sub close_index {
     return 1;
 }
 
-=item delete_index()
+=item delete_index
+
+    $indexer->delete_index();
 
 This currently does nothing, since non-file-based databases haven't been
 implemented.  To delete a SQLite-based index, just delete the .db file (at
@@ -181,18 +196,54 @@ sub delete_index {
     # TODO: Implement delete_index
 }
 
-=item list_fields()
+=item list_fields
+
+    my %available_fields = $indexer->list_fields();
 
 Returns a list of all available metadata fields and their data types as a hash.
 
 =cut
 
 sub list_fields {
-    # TODO: Implement list_fields
+    my $self = shift;
+    my $index_db = $self->db_ref;
+    # I have no idea if the following will work with SQLite; if it doesn't, I
+    # will have to resort to an if/then block to handle both SQLite and
+    # everything else.
+    my $query = $$index_db->prepare("SELECT column_name, data_type FROM information_schema.columns WHERE table_name=\'$self->db_table\'");
+    $query->execute();
+    my (%results, $column_name, $data_type);
+    while(($column_name, $data_type) = $query->fetchrow()) {
+        $results{$column_name} = $data_type;
+    }
+    return %results;
 }
+
+=item create_field
+
+    $indexer->create_field( "Document_Author", "varchar" );
+    $indexer->create_field( "Document_Date", "date" );
+
+Adds a new field to the index.  First parameter is the field name, which is
+required; the second parameter - for the field's data type - is optional, and
+defaults to "varchar" if omitted.  The data type should be a valid SQL data
+type.
+
+Returns true (1) if successful, or undefined if unsuccessful.
+
+=cut
 
 sub create_field {
     # TODO: Implement create_field
+    my $self = shift;
+    my $field_name = shift;
+    if ( $field_name = undef ) {
+        print "No field name specified!\n";
+        return undef;
+    }
+    my $field_type = shift;
+    if ( $field_type = undef ) { $field_type = "varchar" };
+    # SQL stuff goes here
 }
 
 sub edit_field_name {
@@ -212,6 +263,7 @@ sub add_document {
     my $self = shift;
     my $document_path = shift;
     my %document_metadata = shift;
+    my $index_db = $self->db_ref;
     # SQL stuff goes here
 }
 
